@@ -15,6 +15,8 @@ class Controller extends BaseController
     public function index()
     {
         $data = null;
+        $matrix = $this->createMatrix(3,3);
+        dd($matrix);
         return view('welcome')->with('data',$data);
     }
 
@@ -28,5 +30,19 @@ class Controller extends BaseController
         $data = 12;
 
         return view('welcome')->with('data',$data);
+    }
+
+    function createMatrix($m, $n) {
+        $array = [];
+
+        for ($a=0; $a < $m; $a++) { 
+            $sub = [];
+            for ($b=0; $b < $n; $b++) { 
+                $sub[] = 1;
+            }
+            $array[] = $sub;
+        }
+
+        return $array;
     }
 }
