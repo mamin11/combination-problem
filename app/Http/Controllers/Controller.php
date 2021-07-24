@@ -26,12 +26,16 @@ class Controller extends BaseController
         ]);
 
         // $data = $this->usingFormula($request->rows, $request->columns);
-        $data = $this->withoutFormula($request->columns, $request->rows);
+        // $data = $this->withoutFormula($request->columns, $request->rows);
+        // dd((int)$request->rows, (int)$request->columns);
+        $data = $this->longSolution((int)$request->rows, (int)$request->columns); //results in different answer without type casting
 
         return view('welcome')->with('data',$data);
     }
     public function longSolution($m, $n)
     {
+        // $m = 2;
+        // $n = 3;
         // dd($this->getEachNumber(4), $this->getEachNumber(5));
         $combinations = $this->getCombinations($this->getEachNumber($m), $this->getEachNumber($n));
         // // dd($combinations);
@@ -50,7 +54,8 @@ class Controller extends BaseController
             $totalInCols += $this->getRectanglesInCols($matrix, $this->getSwappedArrayValues($combination));
         }
         $total = $totalInRows + $totalInCols;
-        dd($total);
+        // dd($total);
+        return $total;
     }
     
     public function usingFormula($m, $n)
