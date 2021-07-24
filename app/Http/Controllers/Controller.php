@@ -15,32 +15,6 @@ class Controller extends BaseController
     public function index()
     {
         $data = null;
-        // dd($this->getEachNumber(4), $this->getEachNumber(5));
-        // $combinations = $this->getCombinations($this->getEachNumber(3), $this->getEachNumber(3));
-        // // dd($combinations);
-        // $combinationsWithoutDuplicates = $this->removeDuplicatesFromCombination($combinations);
-        // // dd($combinationsWithoutDuplicates);
-        // // dd($this->getRectanglesInRows([[1,2,3,4], [5,6,7,8], [9,10,11,12]], [3,2]));
-        // dd($this->getRectanglesInCols([[1,2,3,4], [5,6,7,8], [9,10,11,12]], [2,3]));
-        // $matrix = $this->createMatrix(3,3);
-        // // dd($matrix);
-        // $total = 0;
-        // $totalInRows = 0;
-        // $totalInCols = 0;
-
-        // // $a = $this->getRectanglesInRows($matrix, [1,1]);
-        // // $b = $this->getRectanglesInRows($matrix, [1,2]);
-        // // $c = $this->getRectanglesInRows($matrix, [2,2]);
-        // // $d = $a+$b+$c;
-        // // dd($a,$b,$c,$d);
-
-
-        // // foreach ($combinationsWithoutDuplicates as $combination) {
-        // //     $totalInRows += $this->getRectanglesInRows($matrix, $combination);
-        // //     $totalInCols += $this->getRectanglesInCols($matrix, $combination);
-        // // }
-        // // $total = $totalInRows + $totalInCols;
-        // // dd($total-1);
         return view('welcome')->with('data',$data);
     }
 
@@ -52,9 +26,31 @@ class Controller extends BaseController
         ]);
 
         // $data = $this->usingFormula($request->rows, $request->columns);
-        $data = $this->withoutFormula($request->rows, $request->columns);
+        $data = $this->withoutFormula($request->columns, $request->rows);
 
         return view('welcome')->with('data',$data);
+    }
+    public function longSolution($m, $n)
+    {
+        // dd($this->getEachNumber(4), $this->getEachNumber(5));
+        $combinations = $this->getCombinations($this->getEachNumber($m), $this->getEachNumber($n));
+        // // dd($combinations);
+        $combinationsWithoutDuplicates = $this->removeDuplicatesFromCombination($combinations);
+        // // dd($combinationsWithoutDuplicates);
+        // // dd($this->getRectanglesInRows([[1,2,3,4], [5,6,7,8], [9,10,11,12]], [3,2]));
+        // dd($this->getRectanglesInCols([[1,2,3,4], [5,6,7,8], [9,10,11,12]], [2,3]));
+        $matrix = $this->createMatrix($m,$n);
+        // // dd($matrix);
+        $total = 0;
+        $totalInRows = 0;
+        $totalInCols = 0;
+
+        foreach ($combinationsWithoutDuplicates as $combination) {
+            $totalInRows += $this->getRectanglesInRows($matrix, $combination);
+            $totalInCols += $this->getRectanglesInCols($matrix, $this->getSwappedArrayValues($combination));
+        }
+        $total = $totalInRows + $totalInCols;
+        dd($total);
     }
     
     public function usingFormula($m, $n)
@@ -113,20 +109,21 @@ class Controller extends BaseController
 
     function getRectanglesInCols($cols, $combination) {
         //this function works the same as getRectanglesInRows except it goes deep the grid ie checks combinations from top to bottom.
-        if($combination !== [1,1]) {
+        if($combination[0] !== $combination[1]) {
             $counter = 0;
-            $colsCount = count($cols[0]);
+            $colsCount = count($cols);
+            $colsCountRow = count($cols[0]);
             // dd($colsCount);
             for ($i=0; $i < count($cols); $i++) { 
                 if(array_key_exists($i + $combination[0]-1, $cols)) {
                     $counter++;
                 }
             }
-            if($combination[1] > 1) {
+            if($combination[0] > 1) {
                 $counterLocal = 0; 
-                for ($i=0; $i < $colsCount; $i++) { 
+                for ($i=0; $i < $colsCountRow; $i++) { 
                     if(array_key_exists($i + $combination[1]-1, $cols[0])) {
-                        $counterLocal++;
+                            $counterLocal++;
                     }
                 }
                 return $counter * $counterLocal;
