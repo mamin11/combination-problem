@@ -50,8 +50,13 @@ class Controller extends BaseController
         $totalInCols = 0;
 
         foreach ($combinationsWithoutDuplicates as $combination) {
-            $totalInRows += $this->getRectanglesInRows($matrix, $combination);
-            $totalInCols += $this->getRectanglesInCols($matrix, $this->getSwappedArrayValues($combination));
+            if($combination[0] > $combination[1]) {
+                $totalInRows += $this->getRectanglesInRows($matrix, $this->getSwappedArrayValues($combination));
+                $totalInCols += $this->getRectanglesInCols($matrix, $combination);
+            } else {
+                $totalInRows += $this->getRectanglesInRows($matrix, $combination);
+                $totalInCols += $this->getRectanglesInCols($matrix, $this->getSwappedArrayValues($combination));
+            }
         }
         $total = $totalInRows + $totalInCols;
         // dd($total);
